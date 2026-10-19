@@ -1,36 +1,36 @@
 #include "GeradorDeMapa1.h"
 
-char **GeraMapa(int totalChaves, int linhas, int colunas){
-    char **mapa;
-    int elemento, aventureiro = 0, chaves = 0, bau = 0, linhaAtual, colunaAtual;
+char **GeraMapa(int totalChaves, int linhas, int colunas, int qtdMonstros){
+    char **mapa, caminho[3] = "0", parede[3] = "1", A[3] = "A", C[3] = "C", B[3] = "B", M[3] = "M";
+    int elemento, aventureiro = 0, chaves = 0, bau = 0, monstros = 0, linhaAtual, colunaAtual;
     for(int i = 0; i < linhas; i++){
         for(int k = 0; k < colunas; k++){
             elemento = rand() % 2;
-            if(elemento == 0) mapa[i][k] = "0";
-            else mapa[i][k] = "1";
+            if(elemento == 0) mapa[i][k] = caminho[0];
+            else mapa[i][k] = parede[0];
         }
     }
     while(aventureiro == 0){
         linhaAtual = rand() % linhas;
         colunaAtual = rand() % colunas;
-        if(mapa[linhaAtual][colunaAtual] !="0" || mapa[linhaAtual][colunaAtual] != "1"){
-            mapa[linhaAtual][colunaAtual] = "A";
+        if(mapa[linhaAtual][colunaAtual] == caminho[0] || mapa[linhaAtual][colunaAtual] == parede[0]){
+            mapa[linhaAtual][colunaAtual] = A[0];
             aventureiro = 1;
         }
     }
     while(chaves < totalChaves){
         linhaAtual = rand() % linhas;
         colunaAtual = rand() % colunas;
-        if(mapa[linhaAtual][colunaAtual] !="0" || mapa[linhaAtual][colunaAtual] != "1"){
-            mapa[linhaAtual][colunaAtual] = "C";
+        if(mapa[linhaAtual][colunaAtual] == caminho[0] || mapa[linhaAtual][colunaAtual] == parede[0]){
+            mapa[linhaAtual][colunaAtual] = C[3];
             chaves += 1;
         }
     }
     while(bau == 0){
         linhaAtual = rand() % linhas;
         colunaAtual = rand() % colunas;
-        if(mapa[linhaAtual][colunaAtual] !="0" || mapa[linhaAtual][colunaAtual] != "1"){
-            mapa[linhaAtual][colunaAtual] = "B";
+        if(mapa[linhaAtual][colunaAtual] == caminho[0] || mapa[linhaAtual][colunaAtual] == parede[0]){
+            mapa[linhaAtual][colunaAtual] = B[3];
             bau = 1;
         }
     }
