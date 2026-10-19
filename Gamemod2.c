@@ -1,4 +1,3 @@
-
 #include "gamemod2.h"
 
 #include <stdio.h>
@@ -152,12 +151,37 @@ static int distancia(Posicao a, Posicao b) {
     return dl + dc;
 }
 
+/* Distancia considerando a conexao entre bordas do mapa global. */
+static int distanciaGlobal(Posicao a, Posicao b, int linhas, int colunas) {
+    int dl = abs(a.linha - b.linha);
+    int dc = abs(a.coluna - b.coluna);
+    int vertical = linhas - dl;
+    int horizontal = colunas - dc;
+
+    if (vertical < dl) dl = vertical;
+    if (horizontal < dc) dc = horizontal;
+
+    return dl + dc;
+}
+
 static int dentroDoMapa(int l, int c, int linhas, int colunas) {
     return l >= 0 && l < linhas && c >= 0 && c < colunas;
 }
 
 static int ehParede(char **mapa, int l, int c) {
     return mapa[l][c] == '1';
+}
+
+/* Conecta as bordas opostas: permite atravessar somente se a celula
+   correspondente do outro lado nao for parede. */
+static int ajustarBorda(char **mapa, int *l, int *c, int linhas, int colunas) {
+    if (*l < 0) *l = linhas - 1;
+    else if (*l >= linhas) *l = 0;
+
+    if (*c < 0) *c = colunas - 1;
+    else if (*c >= colunas) *c = 0;
+
+    return !ehParede(mapa, *l, *c);
 }
 
 /* Cria uma cópia para não modificar o mapa original. */
@@ -237,7 +261,7 @@ static int posicionarMonstro(char **mapa, int linhas, int colunas, EstadoJogo *j
     if (candidatas == NULL)
         return 0;
 
-    int distTotal = distancia(jogo->jogador, jogo->saida);
+    int distTotal = distanciaGlobal(jogo->jogador, jogo->saida, linhas, colunas);
     int distAlvo = distTotal / 2;
 
     for (int i = 0; i < linhas; i++) {
@@ -246,8 +270,8 @@ static int posicionarMonstro(char **mapa, int linhas, int colunas, EstadoJogo *j
                 continue;
 
             Posicao p = {i, j};
-            int dj = distancia(p, jogo->jogador);
-            int ds = distancia(p, jogo->saida);
+            int dj = distanciaGlobal(p, jogo->jogador, linhas, colunas);
+            int ds = distanciaGlobal(p, jogo->saida, linhas, colunas);
 
             if (dj < 2 || ds < 2)
                 continue;
@@ -368,8 +392,12 @@ static int moverJogador(char **mapa, int linhas, int colunas, EstadoJogo *jogo, 
         default: return 0;
     }
 
-    if (!dentroDoMapa(nl, nc, linhas, colunas))
-        return 0;
+    /* Se ultrapassar uma borda, tenta entrar pela borda oposta.
+       A travessia so e permitida se a celula de destino nao for parede. */
+    if (!dentroDoMapa(nl, nc, linhas, colunas)) {
+        if (!ajustarBorda(mapa, &nl, &nc, linhas, colunas))
+            return 0;
+    }
 
     if (ehParede(mapa, nl, nc))
         return 0;
@@ -436,8 +464,11 @@ static int moverMonstro(char **mapa, int linhas, int colunas, EstadoJogo *jogo) 
             int nl = l + dl[d];
             int nc = c + dc[d];
 
-            if (!dentroDoMapa(nl, nc, linhas, colunas))
-                continue;
+            /* O monstro tambem pode atravessar as bordas conectadas. */
+            if (!dentroDoMapa(nl, nc, linhas, colunas)) {
+                if (!ajustarBorda(mapa, &nl, &nc, linhas, colunas))
+                    continue;
+            }
 
             if (ehParede(mapa, nl, nc))
                 continue;
@@ -552,7 +583,7 @@ int iniciarModo2(char **mapa, int linhas, int colunas) {
 
     int stamAnt = jogo.stamina;
     int chavesAnt = jogo.chaves;
-    int distAnt = distancia(jogo.jogador, jogo.monstro);
+    int distAnt = distanciaGlobal(jogo.jogador, jogo.monstro, linhas, colunas);
 
     while (!terminou) {
         double agora = tempoAtualMs();
@@ -585,7 +616,7 @@ int iniciarModo2(char **mapa, int linhas, int colunas) {
         if (terminou)
             break;
 
-        int distMon = distancia(jogo.jogador, jogo.monstro);
+        int distMon = distanciaGlobal(jogo.jogador, jogo.monstro, linhas, colunas);
 
         double tempoMovMonstro = (distMon > DISTANCIA_PERSEGUICAO) ? MONSTRO_LENTO_MS * escala : MONSTRO_RAPIDO_MS * escala;
 
@@ -615,7 +646,7 @@ int iniciarModo2(char **mapa, int linhas, int colunas) {
         }
 
         /* O painel so e reescrito quando algum valor exibido muda. */
-        int distAtual = distancia(jogo.jogador, jogo.monstro);
+        int distAtual = distanciaGlobal(jogo.jogador, jogo.monstro, linhas, colunas);
         int mudouStam = jogo.stamina != stamAnt;
         int mudouChaves = jogo.chaves != chavesAnt;
         int mudouDist = distAtual != distAnt;

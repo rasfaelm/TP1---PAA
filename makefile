@@ -3,8 +3,8 @@ CC = gcc
 CFLAGS = -Wall -Wextra -std=c11
 EXEC = labirinto.exe
 
-FONTES = teste.c Gamemod1.c Gamemod2.c GeradorDeMapa.c
-OBJETOS = teste.o Gamemod1.o Gamemod2.o GeradorDeMapa.o
+FONTES = teste.c Gamemod1.c Gamemod2.c GeradorDeMapa.c labirinto.c
+OBJETOS = teste.o Gamemod1.o Gamemod2.o GeradorDeMapa.o labirinto.o
 
 # Detecta o sistema operacional
 ifeq ($(OS),Windows_NT)

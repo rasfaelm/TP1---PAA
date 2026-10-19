@@ -1,37 +1,24 @@
-
 #include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
-#include "GeradorDeMapa.h"
-#include "Gamemod1.h"
-
-#define LINHAS 10
-#define COLUNAS 10
+#include "labirinto.h"
+#include "Gamemod2.h"
 
 int main(void) {
-    srand(time(NULL));
+    Labirinto lab;
 
-    char **mapa = GeraMapa(2, LINHAS, COLUNAS);
-
-    if (mapa == NULL) {
-        printf("Erro ao gerar o mapa.\n");
+    if (lab_ler_arquivo("Entrada2.txt", &lab) != 0) {
+        printf("Erro ao carregar o arquivo do mapa.\n");
         return 1;
     }
 
-    int x = iniciarModo1(mapa, LINHAS, COLUNAS);
+    int resultado = iniciarModo2(lab.grid, lab.linhas, lab.colunas);
 
-    if(x == 0){
-        printf("Vitoria");
-    }else{
-        printf("Derrota");
+    if (resultado == 1) {
+        printf("Vitoria!\n");
+    } else {
+        printf("Derrota ou jogo encerrado.\n");
     }
 
-    /* Libera a memória alocada. */
-    for (int i = 0; i < LINHAS; i++) {
-        free(mapa[i]);
-    }
-
-    free(mapa);
+    lab_liberar(&lab);
 
     return 0;
 }

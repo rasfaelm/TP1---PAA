@@ -126,11 +126,20 @@ static int movimentarJogador(char **mapa, int linhas, int colunas, JogadorManual
             return 0;
     }
 
-    /* Impede que o jogador saia dos limites. */
-    if (novaLinha < 0 || novaLinha >= linhas ||
-        novaColuna < 0 || novaColuna >= colunas) {
-        return 0;
-    }
+    /*
+     * Ao sair por uma borda, o jogador reaparece na borda oposta,
+     * na mesma linha ou coluna. O movimento ainda depende de a
+     * celula de destino ser transitavel.
+     */
+    if (novaLinha < 0)
+        novaLinha = linhas - 1;
+    else if (novaLinha >= linhas)
+        novaLinha = 0;
+
+    if (novaColuna < 0)
+        novaColuna = colunas - 1;
+    else if (novaColuna >= colunas)
+        novaColuna = 0;
 
     char destino = mapa[novaLinha][novaColuna];
 
