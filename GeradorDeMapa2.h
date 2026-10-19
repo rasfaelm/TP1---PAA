@@ -6,7 +6,7 @@
 #include <ctype.h>
 #include <time.h>
 
-char **GeraMapa(int totalChaves, int linhas, int colunas, int qtdMonstros);
+char **GeraMapa2(int totalChaves, int linhas, int colunas, int qtdMonstros);
 //Gera um mapa de forma aleatoria baseado na 
 //quantidade de linhas colunas e chaves que deve possuir
 
