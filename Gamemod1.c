@@ -1,4 +1,4 @@
-#include "gamemod1.h"
+#include "Gamemod1.h"
 
 #include <stdio.h>
 #include <stdlib.h>

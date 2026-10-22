@@ -1,21 +1,21 @@
-
 CC = gcc
 CFLAGS = -Wall -Wextra -std=c11
-EXEC = labirinto.exe
 
-FONTES = teste.c Gamemod1.c Gamemod2.c GeradorDeMapa.c labirinto.c
-OBJETOS = teste.o Gamemod1.o Gamemod2.o GeradorDeMapa.o labirinto.o
+FONTES = main.c Busca.c Gamemod1.c Gamemod2.c GeradorDeMapa.c labirinto.c
+OBJETOS = $(FONTES:.c=.o)
 
-# Detecta o sistema operacional
 ifeq ($(OS),Windows_NT)
-    RM = del /Q
     EXEC = labirinto.exe
+    RM = del /Q
 else
-    RM = rm -f
     EXEC = labirinto
+    RM = rm -f
 endif
 
 all: $(EXEC)
+
+analise: clean
+	$(MAKE) CFLAGS="$(CFLAGS) -DANALISE" $(EXEC)
 
 $(EXEC): $(OBJETOS)
 	$(CC) $(CFLAGS) -o $(EXEC) $(OBJETOS)
@@ -27,10 +27,6 @@ run: $(EXEC)
 	./$(EXEC)
 
 clean:
-ifeq ($(OS),Windows_NT)
 	-$(RM) $(OBJETOS) $(EXEC)
-else
-	$(RM) $(OBJETOS) $(EXEC)
-endif
 
-.PHONY: all run clean
+.PHONY: all analise run clean
