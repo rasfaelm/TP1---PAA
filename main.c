@@ -7,6 +7,7 @@
 #include "Gamemod1.h"
 #include "Gamemod2.h"
 #include "GeradorDeMapa.h"
+#include "Animacao.h"
 
 #ifdef ANALISE
 static int modo_analise = 1;
@@ -56,6 +57,17 @@ static void resolver(const Labirinto *lab) {
         printf("\n");
         busca_imprimir_analise(&res, stdout);
     }
+    busca_liberar(&res);
+}
+
+static void animar(const Labirinto *lab) {
+    ResultadoBusca res;
+    if (busca_resolver(lab, &res)) {
+        fprintf(stderr, "Erro: falta de memoria.\n");
+        return;
+    }
+    if (res.encontrou) animar_caminho(lab, &res, ANIMACAO_DELAY_MS);
+    else busca_imprimir_caminho(&res, stdout);
     busca_liberar(&res);
 }
 
@@ -120,6 +132,7 @@ int main(int argc, char **argv) {
         printf("5) Jogar - modo manual\n");
         printf("6) Jogar - modo monstro\n");
         printf("7) Salvar mapa em arquivo\n");
+        printf("8) Animar caminho da solucao\n");
         printf("0) Sair\n> ");
         if (scanf("%d", &op) != 1) break;
 
@@ -135,13 +148,15 @@ int main(int argc, char **argv) {
                 printf("\n");
                 lab_imprimir(&lab, stdout);
             }
-        } else if (op >= 4 && op <= 7) {
+        } else if (op >= 4 && op <= 8) {
             if (!tem_mapa) {
                 printf("Carregue ou gere um mapa primeiro.\n");
             } else if (op == 4) {
                 resolver(&lab);
             } else if (op == 5 || op == 6) {
                 jogar(&lab, op - 4); 
+            } else if (op == 8) {
+                animar(&lab);
             } else {
                 char nome[256];
                 printf("Nome do arquivo: ");

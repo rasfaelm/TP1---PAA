@@ -1,7 +1,7 @@
 CC = gcc
 CFLAGS = -Wall -Wextra -std=c11
 
-FONTES = main.c Busca.c Gamemod1.c Gamemod2.c GeradorDeMapa.c labirinto.c
+FONTES = main.c Busca.c Gamemod1.c Gamemod2.c GeradorDeMapa.c labirinto.c Animacao.c
 OBJETOS = $(FONTES:.c=.o)
 
 ifeq ($(OS),Windows_NT)
