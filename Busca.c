@@ -42,7 +42,16 @@ static int explorar(Contexto *ctx, int l, int c, int chaves, int nivel) {
             int nl = l + DL[d];
             int nc = c + DC[d];
 
-            if (nl < 0 || nl >= lab->linhas || nc < 0 || nc >= lab->colunas) continue;
+            // (sem movimento global)
+            //if (nl < 0 || nl >= lab->linhas || nc < 0 || nc >= lab->colunas) continue; 
+
+            // (com movimento global)
+            if (nl < 0) nl = lab->linhas - 1;
+            else if (nl >= lab->linhas) nl = 0;
+            
+            if (nc < 0) nc = lab->colunas - 1;
+            else if (nc >= lab->colunas) nc = 0;
+            
             if (lab->grid[nl][nc] == '1') continue;                    /* parede */
             if (ctx->visitado[nl * lab->colunas + nc]) continue;      /* ja visitada */
 
