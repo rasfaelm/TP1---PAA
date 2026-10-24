@@ -72,12 +72,28 @@ static const char *desenho(char tipo, int linha) {
         "| <o> |", 
         "|_____|"
     };
+    static const char *bixo[] = {
+        " ( O ) ", 
+        "__| |__", 
+        "|| X ||", 
+        "mn X nm", 
+        " // \\\\ "
+    };
+    static const char *caminhoPassado[] = {
+        "       ", 
+        "\\  /   ",  
+        " \\/    ",  
+        " /\\    ",  
+        "/  \\   " 
+    };
 
     switch (tipo) {
         case '1': return parede[linha];
         case 'A': return personagem[linha];
         case 'C': return chave[linha];
         case 'X': return bau[linha];
+        case 'M': return bixo[linha];
+        case '2': return caminhoPassado[linha];
         default:  return vazio[linha];
     }
 }
@@ -100,6 +116,10 @@ void printarMapa(char mapa[TAM][TAM]) {
                     printf(ama "%s" NOR " ", figura);
                 else if (mapa[i][j] == 'X')
                     printf(ama "%s" NOR " ", figura);
+                else if (mapa[i][j] == 'M')
+                    printf(VERM "%s" NOR " ", figura);
+                else if (mapa[i][j] == '2')
+                    printf(VERM "%s" NOR " ", figura);
                 else
                     printf("%s ", figura);
             }
