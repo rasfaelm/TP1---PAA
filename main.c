@@ -8,6 +8,8 @@
 #include "Gamemod2.h"
 #include "GeradorDeMapa.h"
 #include "Animacao.h"
+#include "arte.h"
+#include "Interface.h"
 
 #ifdef ANALISE
 static int modo_analise = 1;
@@ -133,6 +135,7 @@ int main(int argc, char **argv) {
         printf("6) Jogar - modo monstro\n");
         printf("7) Salvar mapa em arquivo\n");
         printf("8) Animar caminho da solucao\n");
+        printf("9) Desenho alternativo\n");
         printf("0) Sair\n> ");
         if (scanf("%d", &op) != 1) break;
 
@@ -163,6 +166,9 @@ int main(int argc, char **argv) {
                 if (scanf("%255s", nome) == 1 && lab_salvar(&lab, nome) == 0)
                     printf("Salvo em %s.\n", nome);
             }
+        } else if (op == 9) {
+                menu();
+                printarMapa(lab.grid, lab.linhas, lab.colunas); 
         } else if (op != 0) {
             printf("Opcao invalida.\n");
         }

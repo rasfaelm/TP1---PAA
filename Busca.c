@@ -93,7 +93,7 @@ int busca_resolver(const Labirinto *lab, ResultadoBusca *res) {
 
 void busca_imprimir_caminho(const ResultadoBusca *res, FILE *saida) {
     if (!res->encontrou) {
-        fprintf(saida, "Não há um caminho possível para a entrada de dados fornecida\n");
+        fprintf(saida, "Nao ha um caminho possivel para a entrada de dados fornecida\n");
         return;
     }
     for (int i = 0; i < res->tamanho; i++)

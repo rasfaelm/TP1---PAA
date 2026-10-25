@@ -65,11 +65,20 @@ static void posicionarCursor(int linha, int coluna) {
 }
 
 /* Retorna o tempo atual em milissegundos. */
+/* Retorna o tempo atual em milissegundos. */
 static double tempoAtualMs(void) {
+#ifdef _WIN32
+    // Código nativo e ultra-preciso para Windows (Evita erro de C11/TIME_UTC)
+    LARGE_INTEGER frequencia, contador;
+    QueryPerformanceFrequency(&frequencia);
+    QueryPerformanceCounter(&contador);
+    return (double)(contador.QuadPart * 1000.0) / frequencia.QuadPart;
+#else
+    // Mantém o código original intocado caso compile no Linux/macOS
     struct timespec ts;
     timespec_get(&ts, TIME_UTC);
-
     return ts.tv_sec * 1000.0 + ts.tv_nsec / 1000000.0;
+#endif
 }
 
 /* Configura o terminal para receber teclas sem Enter. */
