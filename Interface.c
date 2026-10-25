@@ -1,14 +1,16 @@
+
 #include "Interface.h"
-//função habilita o uso de cores e formatação ANSI no terminal do Windows
-void habilitarANSI() {
+
+void habilitarANSI(void) {
+#ifdef _WIN32
     HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
     DWORD dwMode = 0;
 
-    GetConsoleMode(hOut, &dwMode);
-    dwMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
-    SetConsoleMode(hOut, dwMode);
-}
-
-void Interface(){
-    habilitarANSI();
+    if (GetConsoleMode(hOut, &dwMode)) {
+        dwMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
+        SetConsoleMode(hOut, dwMode);
+    }
+#else
+    // Linux/WSL: o terminal normalmente já suporta sequências ANSI.
+#endif
 }

@@ -16,6 +16,10 @@
     #include <sys/time.h>
 #endif
 
+/* Emojis ocupam 2 colunas, igual ao "%c " das demais celulas. */
+#define EMO_JOGADOR "🟩"
+#define EMO_MONSTRO "🟥"
+
 #define STAMINA_MAX 3
 #define REGENERACAO_MS 1000.0
 #define MOVIMENTO_BASE_MS 200.0
@@ -65,20 +69,11 @@ static void posicionarCursor(int linha, int coluna) {
 }
 
 /* Retorna o tempo atual em milissegundos. */
-/* Retorna o tempo atual em milissegundos. */
 static double tempoAtualMs(void) {
-#ifdef _WIN32
-    // Código nativo e ultra-preciso para Windows (Evita erro de C11/TIME_UTC)
-    LARGE_INTEGER frequencia, contador;
-    QueryPerformanceFrequency(&frequencia);
-    QueryPerformanceCounter(&contador);
-    return (double)(contador.QuadPart * 1000.0) / frequencia.QuadPart;
-#else
-    // Mantém o código original intocado caso compile no Linux/macOS
     struct timespec ts;
     timespec_get(&ts, TIME_UTC);
+
     return ts.tv_sec * 1000.0 + ts.tv_nsec / 1000000.0;
-#endif
 }
 
 /* Configura o terminal para receber teclas sem Enter. */
@@ -316,9 +311,9 @@ static void desenharMapa(char **mapa, int linhas, int colunas, const EstadoJogo 
     for (int i = 0; i < linhas; i++) {
         for (int j = 0; j < colunas; j++) {
             if (i == jogo->jogador.linha && j == jogo->jogador.coluna) {
-                printf("P ");
+                printf("%s", EMO_JOGADOR);
             } else if (i == jogo->monstro.linha && j == jogo->monstro.coluna) {
-                printf("M ");
+                printf("%s", EMO_MONSTRO);
             } else {
                 printf("%c ", mapa[i][j]);
             }
@@ -343,15 +338,16 @@ static void desenharMapa(char **mapa, int linhas, int colunas, const EstadoJogo 
 }
 
 /* Desenha apenas uma celula do mapa. O mapa comeca na linha 3 do terminal. */
-static void desenharCelula(int linha, int coluna, char simbolo) {
+static void desenharCelula(int linha, int coluna, const char *simbolo) {
     posicionarCursor(3 + linha, 1 + coluna * 2);
-    printf("%c ", simbolo);
+    printf("%s", simbolo);
     fflush(stdout);
 }
 
 /* Restaura uma celula usando o caractere atual do mapa. */
 static void restaurarCelula(char **mapa, int linha, int coluna) {
-    desenharCelula(linha, coluna, mapa[linha][coluna]);
+    char s[3] = {mapa[linha][coluna], ' ', '\0'};
+    desenharCelula(linha, coluna, s);
 }
 
 /* Atualiza uma linha do painel sem limpar a tela inteira. */
@@ -650,8 +646,8 @@ int iniciarModo2(char **mapa, int linhas, int colunas) {
                 restaurarCelula(copia, monAnt.linha, monAnt.coluna);
             }
 
-            desenharCelula(jogo.jogador.linha, jogo.jogador.coluna, 'P');
-            desenharCelula(jogo.monstro.linha, jogo.monstro.coluna, 'M');
+            desenharCelula(jogo.jogador.linha, jogo.jogador.coluna, EMO_JOGADOR);
+            desenharCelula(jogo.monstro.linha, jogo.monstro.coluna, EMO_MONSTRO);
         }
 
         /* O painel so e reescrito quando algum valor exibido muda. */

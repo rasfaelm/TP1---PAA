@@ -91,7 +91,7 @@ static void desenharMapa(char **mapa, int linhas, int colunas, const JogadorManu
         for (int j = 0; j < colunas; j++) {
             if (i == jogador->linha &&
                 j == jogador->coluna) {
-                printf("P ");
+                printf("🟩");
             } else {
                 printf("%c ", mapa[i][j]);
             }
