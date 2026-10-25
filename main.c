@@ -135,7 +135,7 @@ int main(int argc, char **argv) {
         printf("6) Jogar - modo monstro\n");
         printf("7) Salvar mapa em arquivo\n");
         printf("8) Animar caminho da solucao\n");
-        printf("9) Desenho alternativo\n");
+        printf("9) Desenho alternativo do mapa\n");
         printf("0) Sair\n> ");
         if (scanf("%d", &op) != 1) break;
 
